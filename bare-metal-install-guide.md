@@ -43,7 +43,7 @@ This document expalins how to build a RASP System on bare metal.
     * ```install CPAN```
     * ```reload cpan```
     * ```install Proc::Background```
-9. As the *rasp* user, install the [https://github.com/wargoth/rasp-gm](WRF and RASP binaries). This will put folders such as *GM*, *lib* and *bin*, into the base directory. Other important folders are *mgmt* and the various model directories (e.g *UK12*).
+9. As the *rasp* user, install the (WRF and RASP binaries)[https://github.com/wargoth/rasp-gm]. This will put folders such as *GM*, *lib* and *bin*, into the base directory. Other important folders are *mgmt* and the various model directories (e.g *UK12*).
 10. We need to update some shared libraries that are there in Fedora Core 25, but are renamed (and newer) in Fedora Core 30. Do not try this step before adding the main RASP binaries, as the *lib* directory will not exist. As the *rasp* user:
   * ```mv ./lib/libjasper.so.1 ./lib/libjasper.so.1.notused```
   * ```ln -s /usr/lib64/libjasper.so.4 ./lib/libjasper.so.```
