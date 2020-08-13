@@ -15,7 +15,7 @@ This document expalins how to build a RASP System on bare metal.
     * swap = 12G (match the memory you have)
     * /home = 378G (what's left from 500G)
   * First time through, it may be wise to set ```SElinux``` to *permissive* and fix any warnings as they arise in use. As *root* edit the SElinux permissions file, but do not disable SELinux if at all possible (it is there to secure your host). If you are really, really sure the host will be fine, then of course you can decide to disable *SELinux*.
-   * Note the number of cores you have available. Use ```cat /proc/cpuinfo | grep Mhz | wc``` to provide the number of cores you have and keep for later on for editing ```.bashrc```.
+   * Note the number of cores you have available. Use ```cat /proc/cpuinfo | grep MHz | wc``` to provide the number of cores you have and keep for later on for editing ```.bashrc```.
 
 ## Base Build (Fedora Core 30)
 1. Take the media and build the server using the file system split as shown earlier. 
@@ -43,8 +43,8 @@ This document expalins how to build a RASP System on bare metal.
     * ```install CPAN```
     * ```reload cpan```
     * ```install Proc::Background```
-9. As the *rasp* user, install the [WRF and RASP binaries](https://github.com/wargoth/rasp-gm). This will put folders such as *GM*, *lib* and *bin*, into the base directory. Other important folders are *mgmt* and the various model directories (e.g *UK12*).
-10. We need to update some shared libraries that are there in Fedora Core 25, but are renamed (and newer) in Fedora Core 30. Do not try this step before adding the main RASP binaries, as the *lib* directory will not exist. As the *rasp* user:
+9. As the *rasp* user, install the [WRF and RASP binaries](https://github.com/wargoth/rasp-gm). This will put folders such as *GM*, *lib* and *bin*, into the base directory. Other important folders are *mgmt* (if you have local utilities) and the various model directories (e.g *UK12* - see the other repository for the UK versions of these models, called *rasp-models*).
+10. We need to update some shared libraries that are there in Fedora Core 25, but are renamed (and newer) in Fedora Core 30. Do not try this step before adding the main RASP binaries, as the *lib* directory will not exist. Of note for WRF 3.6, this needs an older gfortran binary - see notes at the bottom. As the *rasp* user:
   * ```mv ./lib/libjasper.so.1 ./lib/libjasper.so.1.notused```
   * ```ln -s /usr/lib64/libjasper.so.4 ./lib/libjasper.so.```
   * ```mv  ./lib/libgfortran.so.3  ./lib/libgfortran.so.3.notused```
@@ -76,4 +76,7 @@ That should be it. The next step is to test and to do that, as *rasp* use *runGM
 ## Notes ##
   * You may find that if you have SELinix enabled (recommend *permissive* to fix issues then *enforcing*), you may need to permit processes to read files in certain locations. Use ```setsebool -P httpd_enable_homedirs 1``` as *root* to allow the HTTP daemon to see the results of the runs. If you move the output files elsewhere, then you may not need this.
   * As *rasp* create a crontab entry for your runs if you plan to run regularly. The format of what you run will vary on what you wish to do. But be careful when running runs as ```cron``` because the shell variables, when run interactively, will not be available to ```cron``` and so you may see path or other errors if ```cron``` is not using full path names.
+  * If you get an error in plotting in the NCL logged error files (found in a file like: *<model>/LOG/ncl.out....ERROR*) you may need to use an older *libgfortran.so.3* build from older gfortran source code. This may look like:
+  ``` warning:An error occurred loading the external file /home/rasp/GM/ncl_jack_fortran.so, file not loaded
+  ``` /usr/lib64/libgfortran.so.5: version `GFORTRAN_1.4' not found (required by /home/rasp/GM/ncl_jack_fortran.so)
  
